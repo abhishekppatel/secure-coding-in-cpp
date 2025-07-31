@@ -2,29 +2,47 @@
 // Exercise 01_03
 // Safer Alternatives in Modern C++, by Eduardo Corpeño
 
+#include <array>   
+#include <fstream>
 #include <iostream>
-#include <cstring>   // For strcpy, strlen
-#include <cstdlib>   // For malloc, free
+#include <string>   
+
+#include "../../../inc/helper.hpp"
 
 int main(){
 
-    // 1. Raw pointers for dynamic memory
-    char* name = (char*)malloc(100);  // dangerous: manual memory management
-    strcpy(name, "Eduardo");
+    // 1. Don't use raw pointers for dynamic memory. Use std string 
+    //    instead that manages memory allocation internally securely.
+    std::string name {"Abhishek"};
     std::cout << "Name: " << name << std::endl;
-    free(name);  // must remember to free
 
-    // 2. C-style arrays with fixed size
-    int scores[5] = {95, 88, 76, 100, 67};  // no bounds checking
-    std::cout << "Accessing 6th score (out of bounds): " << scores[5] << std::endl;  // undefined behavior
+    // 2. Don't use C-style arrays with fixed size. Use std array 
+    //    intead that checks for out of bounds. 
+    std::array<int,5> scores {95, 88, 76, 100, 67};
+    try
+    {
+        std::cout << "Accessing 6th score (out of bounds): " << scores.at(5) << std::endl;  
+    }
+    catch(const std::out_of_range& error)
+    {
+        std::cerr << error.what() << '\n';
+    }
+    
 
-    // 3. Manual resource management (FILE*)
-    FILE* f = fopen("sample.txt", "w");  // forget to close = resource leak
-    if (f){
-        fputs("This is a test.\n", f);
-        fclose(f);  // must remember to close
+    // 3. Dont use Manual resource management (FILE*). Intead rely on the 
+    //    std ofstream that make sure internally that file is closed after 
+    //    it is used. 
+    std::string filename {"sample.txt"};
+    std::ofstream file(filename);  
+    if (file.is_open()){
+        file <<"This is a test.\n";
+    }
+    else
+    {
+        std::cerr << "Error opening file: " << filename << std::endl;
     }
 
-    std::cout << std::endl << std::endl;
+    // std::cout << "End of the excercise 01_03."<< std::endl << std::endl;
+    endOfExcercise("01_03");
     return 0;
 }
