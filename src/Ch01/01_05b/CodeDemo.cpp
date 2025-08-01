@@ -4,17 +4,22 @@
 
 #include <iostream>
 
-#define SQUARE(x) x * x
+#include "../../../inc/helper.hpp"
+
+// Function are safer than macros.
+long long int square(int x) {
+    return ((x) * (x));
+}
 
 int main(){
     int input;
     std::cout << "Enter a number: ";
     std::cin >> input;
 
-    int result = SQUARE(input + 1); // expands to: input + 1 * input + 1
+    int result = square(input + 1); // expands to: input + 1 * input + 1
 
     std::cout << "Result: " << result << std::endl;
 
-    std::cout << std::endl << std::endl;
+    endOfExcercise("01_05");
     return 0;
 }
